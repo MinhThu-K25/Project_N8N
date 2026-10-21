@@ -1,0 +1,279 @@
+{
+  "name": "Chăm_Sóc_Khách_Hàng",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1db04515-bafd-435c-ba80-247fd2089a87",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-zalos-user.zaloLoginByQr",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5ac59f3d-5c19-4a33-9b19-ffbda57a0f69",
+      "name": "Zalo Login Via QR Code",
+      "credentials": {
+        "n8nZaloApi": {
+          "id": "KAb7bWSyunl5kXf4",
+          "name": "n8n Zalo Account Credential account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-zalos-user.zaloMessageTrigger",
+      "typeVersion": 1,
+      "position": [
+        560,
+        224
+      ],
+      "id": "39e4e3d1-cbc9-4005-a04d-23de5392ee12",
+      "name": "Zalo Message Trigger",
+      "webhookId": "e119ca9d-d499-4768-be65-63b6e2abbac9",
+      "credentials": {
+        "zaloApi": {
+          "id": "96Ggry5KZIM3dJnr",
+          "name": "Zalo API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        640,
+        448
+      ],
+      "id": "21c6c58f-0003-4329-b2fb-df07fd7d6843",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "8iKXM1X2zOgTu3Dz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.data.msgId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        832,
+        448
+      ],
+      "id": "e0a488a5-1cc8-44bd-80f9-929d1cb7f3b7",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "threadId": "={{ $('Zalo Message Trigger').item.json.message.threadId }}",
+        "message": "= {{ $json.output }}",
+        "quote": {},
+        "mentions": {}
+      },
+      "type": "n8n-nodes-zalos-user.zaloSendMessage",
+      "typeVersion": 4,
+      "position": [
+        1216,
+        240
+      ],
+      "id": "39c6705a-7afb-437a-82ef-1bfc6c275874",
+      "name": "Zalo Send Message",
+      "credentials": {
+        "zaloApi": {
+          "id": "96Ggry5KZIM3dJnr",
+          "name": "Zalo API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1wUVX0TSeScJMZAtN-z5-twbZNaJXPo_MGnkNnVheMN0",
+          "mode": "list",
+          "cachedResultName": "CHĂM SÓC KHÁCH HÀNG TỰ ĐỘNG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wUVX0TSeScJMZAtN-z5-twbZNaJXPo_MGnkNnVheMN0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wUVX0TSeScJMZAtN-z5-twbZNaJXPo_MGnkNnVheMN0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        464
+      ],
+      "id": "be4b48b5-881d-410e-a585-3d39c9efa1a2",
+      "name": "Hoi_Dap",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dV3LQyDHGSiOsnCE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1wUVX0TSeScJMZAtN-z5-twbZNaJXPo_MGnkNnVheMN0",
+          "mode": "list",
+          "cachedResultName": "CHĂM SÓC KHÁCH HÀNG TỰ ĐỘNG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wUVX0TSeScJMZAtN-z5-twbZNaJXPo_MGnkNnVheMN0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1058714528,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wUVX0TSeScJMZAtN-z5-twbZNaJXPo_MGnkNnVheMN0/edit#gid=1058714528"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1008,
+        464
+      ],
+      "id": "e6c87c62-c43f-4e46-83cb-b8a1341058b3",
+      "name": "San Pham",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dV3LQyDHGSiOsnCE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.data.content }}",
+        "options": {
+          "systemMessage": "Đóng vai trò là nhân viên bán giày chuyên nghiệp, có kinh nghiệm tư vấn sản phẩm, hỗ trợ khách hàng và chăm sóc sau bán hàng.\n- Hãy lấy dữ liệu từ file Google Sheet được đính kèm để trả lời các câu hỏi có độ tương đồng với file.\n\nNếu khách đặt câu hỏi trùng hoặc tương tự với nội dung có trong Google Sheet, hãy lấy đúng câu trả lời tương ứng trong bảng dữ liệu đó để phản hồi.\n\nNếu có nhiều câu trả lời phù hợp, hãy chọn câu trả lời tự nhiên, thân thiện, phù hợp với tình huống hội thoại và giọng văn của nhân viên bán hàng.\n\nNếu khách hỏi về giá, size, chất liệu, đổi trả, bảo hành, giao hàng, chương trình khuyến mãi, hãy ưu tiên lấy câu trả lời trong file Google Sheet trước.\n\nNếu khách hỏi về giày mới, sản phẩm hot trend hoặc cần tư vấn chọn size, hãy trả lời bằng phong cách thân thiện, gợi mở, đồng thời đề xuất sản phẩm cụ thể.\n\nNếu khách hỏi các câu hỏi không có trong file hoặc không liên quan đến giày dép, hãy trả lời nhẹ nhàng:\n- “Dạ, câu này em chưa có trong danh sách, để em hỏi thêm và phản hồi lại cho mình nha!”\n\nMục tiêu: Tạo cảm giác thân thiện, chuyên nghiệp, giúp khách hàng cảm thấy được chăm sóc tận tình như đang nói chuyện với nhân viên thật.      ĐOẠN MÃ ĐỂ DÁN"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        224
+      ],
+      "id": "107dce2b-3bb4-4510-aec9-4c7bb5964e51",
+      "name": "AI Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Zalo Login Via QR Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zalo Message Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hoi_Dap": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "San Pham": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Zalo Send Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "29cc3525-0a88-4d50-9790-83ef96dc8f8b",
+  "meta": {
+    "instanceId": "ce59e91be6415b2060ed112c8eced03d2fead0c726947c3ccfb2a4e1b84d4770"
+  },
+  "id": "QfHJ1FBpAnVzPHFi",
+  "tags": []
+}

@@ -1,0 +1,190 @@
+{
+  "name": "Gửi Mail Tự Động",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ZuODJRpRyYwG2Y-79ZPal_OijFjOJt9sjA6JUDr1wTA",
+          "mode": "list",
+          "cachedResultName": "EMAIL_TU_DONG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZuODJRpRyYwG2Y-79ZPal_OijFjOJt9sjA6JUDr1wTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZuODJRpRyYwG2Y-79ZPal_OijFjOJt9sjA6JUDr1wTA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        336,
+        0
+      ],
+      "id": "ed74c1f9-d21f-4d11-852a-38ad8c62a8bd",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1GG8k4PEibU0oUka",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.EMAIL_NHAN }}",
+        "subject": "={{ $json.TIEU_DE }}",
+        "emailType": "text",
+        "message": "={{ $json['NOI_DUNG '] }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        832,
+        -48
+      ],
+      "id": "aa26eaa4-67f2-4d39-b023-bfb9a84a31c0",
+      "name": "Send a message",
+      "webhookId": "055113c4-22b8-480e-ab08-b573d2e0833e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2L7ZwrpqieiXrN41",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f9568e0c-525a-4a0e-9876-6b3a45b77728",
+              "leftValue": "={{ $json.TRANG_THAI }}",
+              "rightValue": "Đã Gửi",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "e4ca2324-2b07-4827-8f7c-bd4846b43c63",
+              "leftValue": "={{ $json.NGAY }}",
+              "rightValue": "={{ $now.format('yyyy-MM-dd') }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "70cfaa0d-bdef-4249-bb93-dbade9c82974",
+              "leftValue": "={{ $json.THOI_GIAN }}",
+              "rightValue": "={{ new Date().toLocaleTimeString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit' }) }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        -16
+      ],
+      "id": "a0b2410e-c72f-45ce-bb7d-78b0fe7caea9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "35fe71c1-8922-419b-aa4e-96d550424de3",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f5c41eeb-6361-4878-949b-776ecadab091",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "410a27f182119d5534290c0ea2cbb384577414576b50892dd605cfabf36c0639"
+  },
+  "id": "hnAM8qyhNcH6fZ31",
+  "tags": []
+}

@@ -1,0 +1,954 @@
+{
+  "name": "Post Facebook",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 13
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -64
+      ],
+      "id": "48ef4501-19fb-45f9-9d2f-2422f8e6dade",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1C_30omd7oMgpjI5EbMKFAdRqwtcGZ-C13U5HOy4IRC4",
+          "mode": "list",
+          "cachedResultName": "Viết bài blog tự động ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C_30omd7oMgpjI5EbMKFAdRqwtcGZ-C13U5HOy4IRC4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Trang tính1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C_30omd7oMgpjI5EbMKFAdRqwtcGZ-C13U5HOy4IRC4/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -32,
+        -64
+      ],
+      "id": "cb2adcfc-b73e-4095-b65b-ec4849d30dbc",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WT2CCZuoGchXPko3",
+          "name": "Google Sheets account 16"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "869348979590055",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $('Code in JavaScript').item.json.context }}"
+              },
+              {
+                "name": "attached_media",
+                "value": "={{ $('Aggregate').item.json.attached_media }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2688,
+        -416
+      ],
+      "id": "b9deae3c-6da8-467f-abc0-e13e9dcb7272",
+      "name": "Facebook Graph API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "0jyQJ7HCc83QtwAp",
+          "name": "Facebook Graph account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Bạn là một chuyên gia viết nội dung marketing. Dưới đây là phần nội dung đầu vào (input content).Bạn hãy viết cho người việt Hãy làm 3 việc:\n1. Phân tích nhanh nội dung.\n2. Gạch đầu dòng các ý chính nổi bật để viết bài (content marketing hoặc social media post).\n\n\"content\": [nội dung việt bài hoàn chính, rõ ràng, ngắn gọn, đùng trọng tâm, có thể đăng lên Facebook, website hoặc blog]\n\nNội dung cần xử lý\n{{ $json['Tên'] }}\n\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1616,
+        -416
+      ],
+      "id": "a4d7c9e8-285d-463e-aaad-d3f7c880c9e1",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1616,
+        -272
+      ],
+      "id": "643dc3d8-82a5-4e5b-905a-38d45abba216",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "vhk47mKiqcjNpOxD",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Bạn là một chuyên gia viết nội dung truyền thông xã hội. Dưới đây là phần nội dung sơ lược đã được AT phân tích từ trước. Hãy chuyển nó thành một bài viết hoàn chỉnh, có các yêu cầu sau:\n1. Giữ nguyên tình thần và thông điệp chính của nội dung.\n2.Viết lại thành một bài viết mạch lạc, có mà đầu - thân bái kết luận rõ ràng.\n3. Sử dụng giọng văn thân thiện, gần gũi, đã hiệu, phù hợp đăng trên Facebook\n4. Có thể sử dụng emoji vừa phải để tăng thu hút (nếu phù hợp).\n5. Giữ độ dài vừa phải (từ 200-350 từ).\n\nDưới đây là nội dụng sơ lược:\n\n{{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1888,
+        -416
+      ],
+      "id": "0ea6a800-60ef-4105-9f5f-5bbe2e905ca7",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        -256
+      ],
+      "id": "0acc730c-876a-4867-b4bd-ae8d1f345a8f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "vhk47mKiqcjNpOxD",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Code in JavaScript').item.json.context }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2528,
+        -416
+      ],
+      "id": "9befffdf-3f89-41a3-b807-97f398ffddc1",
+      "name": "Update a document1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "RrCVWGkqIRbWb351",
+          "name": "Google Docs account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  // Lấy nội dung text\n  let text = item.json.text || \"\";\n  const image = $('Get row(s) in sheet').first().json['Tên'] ;\n  // Dòng này xóa tất cả dấu * hoặc **\n  text = text.replace(/\\*/g, \"\");\n\n  // Ghi lại kết quả vào output\n  item.json.context = text;\n  item.json.promt_image = image;\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2192,
+        -416
+      ],
+      "id": "d4472055-f0e7-4254-8bb6-80a7b379812f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "85ce936d-2467-4c5d-9dbe-78bbc0ba9f0c",
+              "leftValue": "={{ $json['Ngày'] }}",
+              "rightValue": "={{ $now.toLocal(Asia/Ho_Chi_Minh).format('dd/MM/yyyy') }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "d2eab043-3ed2-4b01-94dd-45fdce8ae9ee",
+              "leftValue": "={{ $json['Ngày'] }}",
+              "rightValue": "={{ $now.toLocal(Asia/Ho_Chi_Minh).format('dd-MM-yyyy') }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        -64
+      ],
+      "id": "0e296fe5-8f2d-4f11-872d-c0d2a6399111",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $('Get row(s) in sheet').item.json['Hình ảnh'] }}",
+            "mode": "url"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        608,
+        -256
+      ],
+      "id": "9001628d-ee39-4842-b3fd-88e7aca4e5e5",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "zzPkszQUVHsdgSWb",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nitems.sort((a, b)=> {\n  const nameA = a.json.name.toLowerCase();\n  const nameB = b.json.name.toLowerCase();\n  return nameA.localeCompare(nameB, undefined,{numeric: true})\n});\nreturn items"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        -256
+      ],
+      "id": "94a117c3-771f-4c36-a61b-d40baa13f398",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        976,
+        -272
+      ],
+      "id": "7c4da81f-48f2-4e17-8cde-3ee1c5b23fe4",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1232,
+        -224
+      ],
+      "id": "5e8933e0-21b1-44b1-9286-4927a0584c20",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "zzPkszQUVHsdgSWb",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "869348979590055",
+        "edge": "photos",
+        "sendBinaryData": true,
+        "binaryPropertyName": "flex:data",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "published",
+                "value": "false"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        -208
+      ],
+      "id": "c65cfabd-6d07-463c-ad5c-2b24c557a42a",
+      "name": "Facebook Graph API1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "0jyQJ7HCc83QtwAp",
+          "name": "Facebook Graph account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0e7afee2-f7ac-474a-883d-ab5836d6a76d",
+              "name": "media_fbid",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1184,
+        -368
+      ],
+      "id": "6e1b337b-c8c0-4156-b216-289035f1675b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "attached_media",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        -368
+      ],
+      "id": "14201983-252f-4722-ba86-486ea2a156e3",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Hình ảnh'] }}",
+                    "rightValue": "=",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "783790b6-c268-4364-97d1-1aca5e9d55d6"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "510e8599-cd00-4006-95e5-051287df279b",
+                    "leftValue": "={{ $json['Hình ảnh'] }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        384,
+        -112
+      ],
+      "id": "3831dcc7-f38c-4fe0-b34e-995c3dc91293",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "folderId": "1VBClUy1gglLki2uspSTwlpbGpa7YrVsO",
+        "title": "Bài viết"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2384,
+        -416
+      ],
+      "id": "c5c028d1-2e5e-49a5-b9da-e4a082c3d5cd",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "RrCVWGkqIRbWb351",
+          "name": "Google Docs account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Bạn là một chuyên gia viết nội dung marketing. Dưới đây là phần nội dung đầu vào (input content).Bạn hãy viết cho người việt Hãy làm 3 việc:\n1. Phân tích nhanh nội dung.\n2. Gạch đầu dòng các ý chính nổi bật để viết bài (content marketing hoặc social media post).\n\n\"content\": [nội dung việt bài hoàn chính, rõ ràng, ngắn gọn, đùng trọng tâm, có thể đăng lên Facebook, website hoặc blog]\n\nNội dung cần xử lý\n{{ $json['Tên'] }}\n\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        544,
+        32
+      ],
+      "id": "c5b4b214-f16b-4bf1-8546-f4209457f474",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        544,
+        176
+      ],
+      "id": "32292117-64b4-4f3b-8a12-2544efe43a56",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "vhk47mKiqcjNpOxD",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Bạn là một chuyên gia viết nội dung truyền thông xã hội. Dưới đây là phần nội dung sơ lược đã được AT phân tích từ trước. Hãy chuyển nó thành một bài viết hoàn chỉnh, có các yêu cầu sau:\n1. Giữ nguyên tình thần và thông điệp chính của nội dung.\n2.Viết lại thành một bài viết mạch lạc, có mà đầu - thân bái kết luận rõ ràng.\n3. Sử dụng giọng văn thân thiện, gần gũi, đã hiệu, phù hợp đăng trên Facebook\n4. Có thể sử dụng emoji vừa phải để tăng thu hút (nếu phù hợp).\n5. Giữ độ dài vừa phải (từ 200-350 từ).\n\nDưới đây là nội dụng sơ lược:\n\n{{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        816,
+        32
+      ],
+      "id": "879e78ff-8ed1-4e14-820e-2b56fc2f24e2",
+      "name": "Basic LLM Chain3"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        880,
+        192
+      ],
+      "id": "53ae8fa3-1c75-4bea-8f3a-90ba5c542128",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "vhk47mKiqcjNpOxD",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Code in JavaScript2').item.json.context }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        32
+      ],
+      "id": "f242fe0f-76d6-45c8-a4ff-2d22f083f1e8",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "RrCVWGkqIRbWb351",
+          "name": "Google Docs account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  // Lấy nội dung text\n  let text = item.json.text || \"\";\n  const image = $('Get row(s) in sheet').first().json['Tên'] ;\n  // Dòng này xóa tất cả dấu * hoặc **\n  text = text.replace(/\\*/g, \"\");\n\n  // Ghi lại kết quả vào output\n  item.json.context = text;\n  item.json.promt_image = image;\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        32
+      ],
+      "id": "b5f7a2f1-9c49-4c7d-90c4-e304e9539ee2",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "folderId": "1VBClUy1gglLki2uspSTwlpbGpa7YrVsO",
+        "title": "Bài viết"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        32
+      ],
+      "id": "a5910795-5fdc-448d-9fc5-c059896da44e",
+      "name": "Create a document1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "RrCVWGkqIRbWb351",
+          "name": "Google Docs account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "869348979590055",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $('Code in JavaScript2').item.json.context }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        32
+      ],
+      "id": "fe5632a0-1e3d-4f32-b12f-b1d12f8c3f49",
+      "name": "Facebook Graph API2",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "0jyQJ7HCc83QtwAp",
+          "name": "Facebook Graph account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document1": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Update a document1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Create a document1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document1": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9da85363-01d4-4aea-9553-1548033e654b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "410a27f182119d5534290c0ea2cbb384577414576b50892dd605cfabf36c0639"
+  },
+  "id": "Kaba5Oy2mkHDXhJm",
+  "tags": []
+}

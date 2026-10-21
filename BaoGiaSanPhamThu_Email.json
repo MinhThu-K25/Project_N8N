@@ -1,0 +1,399 @@
+{
+  "name": "BaoGiaSanPhamThu",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fbb7027b-7746-4b79-93d6-b7c2c382557a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-zalos-user.zaloLoginByQr",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "cc502960-88db-4230-853c-e09d3431ce58",
+      "name": "Zalo Login Via QR Code",
+      "credentials": {
+        "n8nZaloApi": {
+          "id": "yekrCxfz149AbDl3",
+          "name": "n8n Zalo Account Credential account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18785417-c80d-4b2a-b1bc-80b1c73bb71d",
+              "leftValue": "={{ $json.message.data.content }}",
+              "rightValue": "báo giá",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        784,
+        336
+      ],
+      "id": "77a2365a-e455-42b1-a1ab-97353816c572",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3392b926-090c-4efb-8618-7b3e238db13a",
+              "leftValue": "={{ $json.errorCode }}",
+              "rightValue": "ERR_NO_VALID_PRODUCTS",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1232,
+        320
+      ],
+      "id": "dff7cd04-abf9-4249-bb16-cffb8e01d80d",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1grv1slofMw1PuqnEiHzZp5hxtBxmZlQUap9GJvR09cw",
+          "mode": "list",
+          "cachedResultName": "Data bảng sản phẩm",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1grv1slofMw1PuqnEiHzZp5hxtBxmZlQUap9GJvR09cw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sản Phẩm",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1grv1slofMw1PuqnEiHzZp5hxtBxmZlQUap9GJvR09cw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1520,
+        -32
+      ],
+      "id": "efc270b7-3d5d-4ac8-9e01-de20a3698041",
+      "name": "SanPham",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dNVxJ0HqX1VSyiXQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1grv1slofMw1PuqnEiHzZp5hxtBxmZlQUap9GJvR09cw",
+          "mode": "list",
+          "cachedResultName": "Data bảng sản phẩm",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1grv1slofMw1PuqnEiHzZp5hxtBxmZlQUap9GJvR09cw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1144181631,
+          "mode": "list",
+          "cachedResultName": "Thong_TinKH",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1grv1slofMw1PuqnEiHzZp5hxtBxmZlQUap9GJvR09cw/edit#gid=1144181631"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1520,
+        240
+      ],
+      "id": "43c92441-0b7b-4858-b7d0-44340936d9b1",
+      "name": "ThongTinKH",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dNVxJ0HqX1VSyiXQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-zalos-user.zaloMessageTrigger",
+      "typeVersion": 1,
+      "position": [
+        592,
+        336
+      ],
+      "id": "f997701e-1a02-4a16-9d8f-0be75ca9a8c2",
+      "name": "Zalo Message Trigger1",
+      "webhookId": "5ddd4536-e1d7-4387-9d01-0fe9559d5c2f",
+      "credentials": {
+        "zaloApi": {
+          "id": "96Ggry5KZIM3dJnr",
+          "name": "Zalo API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ Trường hợp KHÔNG tìm thấy sản phẩm hợp lệ\nreturn [{\n    json: {\n        error: true, // Biến đánh dấu có lỗi xảy ra\n        errorCode: \"ERR_NO_VALID_PRODUCTS\", // Mã lỗi cụ thể\n        errorMessage: \"Không tìm thấy sản phẩm hợp lệ nào\" // Thông báo lỗi cho người dùng\n    }\n}]\n\n// ✅ Nếu đến được đoạn code này nghĩa là dữ liệu hợp lệ\nconsole.log(\"Hoàn thành. Các sản phẩm hợp lệ:\", JSON.stringify(requestedItems));\n// In ra console danh sách sản phẩm hợp lệ để kiểm tra hoặc debug\n\n// ✅ Trả về kết quả khi mọi thứ đều hợp lệ\nreturn [{\n    json: {\n        requestedItems: requestedItems, // Danh sách sản phẩm đã được xác nhận là hợp lệ\n        customerEmail: customerEmail,   // Email của khách hàng\n        chatId: chatId,                 // ID của cuộc trò chuyện (nếu có)\n        errorCode: \"NONE\"               // Không có lỗi\n    }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        320
+      ],
+      "id": "6df7932f-a284-47dc-a00c-f831965d5f5d",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Hãy tạo cho tôi một file **báo giá sản phẩm chuyên nghiệp** với bố cục sau:\n\n**Thông tin công ty:**\n- Tên công ty: {{ $(\"ThongTinKH\").item.json[\"Tên công ty\"] }}\n- Điện thoại: {{ $(\"ThongTinKH\").item.json[\"Zalo\"] }}\n- Người lập báo giá: {{ $(\"ThongTinKH\").item.json[\"Người lập báo giá\"] }}\n- Ngày báo giá: {{ $(\"ThongTinKH\").item.json[\"Ngày báo giá\"] }}\n- Hiệu lực báo giá: {{ $(\"ThongTinKH\").item.json[\"Hiệu lực\"] }}\n\n**Danh sách sản phẩm:**\n{{ $json['Mã SP'] }}\n{{ $json['Tên sản phẩm'] }}\n{{ $json['Mô tả'] }}\n{{ $json.soluong }}\n{{ $json['Đơn giá'] }}\n{{ $json['Thành tiền'] }}\n**Yêu cầu trình bày:**\n- Đưa ra bảng có các cột: STT | Tên sản phẩm | ĐVT | Số lượng | Đơn giá | Thành tiền | Ghi chú  \n- Có dòng tổng cộng, chiết khấu (nếu có) và tổng thanh toán cuối trang  \n- Chèn chữ “Xin chân thành cảm ơn Quý khách!” canh giữa ở cuối  \n- Đảm bảo xuất ra HTML sạch, không ký tự lạ hoặc mã hóa sai  ",
+        "options": {
+          "systemMessage": "=Bạn là chuyên viên tạo file báo giá chuyên nghiệp.  \nHãy xuất nội dung báo giá dưới dạng HTML chuẩn UTF-8, có thể chuyển đổi trực tiếp sang file Word (.docx) mà không bị lỗi font.  \nHãy trình bày theo bố cục chuẩn của mẫu báo giá doanh nghiệp Việt Nam, có logo, tiêu đề, thông tin công ty, bảng sản phẩm, và phần tổng kết.  \nYêu cầu:\n- Canh giữa tiêu đề \"BẢNG BÁO GIÁ\"\n- Các mục phải thẳng hàng, dễ đọc\n- Bảng sản phẩm có viền, có tiêu đề cột rõ ràng\n- Tổng cộng, chiết khấu, thành tiền cuối trang\n- Font: \"Times New Roman\"\n- Kích thước chữ 13"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2320,
+        -48
+      ],
+      "id": "ef84f673-f131-4122-81a6-555ab6301897",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        128
+      ],
+      "id": "f711eff6-daa7-4b45-a528-bd30b094c7d3",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "8iKXM1X2zOgTu3Dz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1744,
+        -32
+      ],
+      "id": "c2668246-1196-4602-bcde-e4d21c4c339a",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sendTo": "minhth2121@gmail.com",
+        "subject": "Báo giá ",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2672,
+        -48
+      ],
+      "id": "cef032a4-ea1c-4aad-ae2b-c99b8037fa1e",
+      "name": "Send a message",
+      "webhookId": "e911cc18-e35c-4bb1-95a3-0077e9952f68",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IFn4HwXb44A8Vle1",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Zalo Login Via QR Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "SanPham",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "ThongTinKH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SanPham": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ThongTinKH": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Zalo Message Trigger1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "533ad3a2-e680-4a43-b74e-1021a23fb0d2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ce59e91be6415b2060ed112c8eced03d2fead0c726947c3ccfb2a4e1b84d4770"
+  },
+  "id": "CNDaFs7kD83SZGIU",
+  "tags": []
+}
